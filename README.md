@@ -60,7 +60,8 @@ if (exist_plugin_action('turnstile') && ($__v = call_user_func_array('plugin_tur
 
 ### 動作確認
 
-ページ編集やコメント投稿ができていれば正常です。
+本プラグインが正しく導入されていれば、ページ末尾に「This site is protected by Turnstile and the Cloudflare Privacy Policy and Terms of Service apply.」との文言が表示されます。  
+この状態でページ編集やコメント投稿ができていれば正常です。
 
 逆に拒否される場合を確認したければ、シークレットキーの値をわざと不正にしてみてください。  
 その状態でページ編集などを試みると、403エラーとなるはずです（デフォルト設定の場合）。  
