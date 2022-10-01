@@ -57,6 +57,7 @@ function plugin_turnstile_convert() {
 	if ($included) return '';
 	$included = true;
 
+	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by Turnstile and the Cloudflare <a href="' . 'https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="' . 'https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
 
 	// JavaScript
 	$siteKey = PLUGIN_TURNSTILE_SITE_KEY;
@@ -205,7 +206,7 @@ __PluginTurnstile__.prototype.submit = function(e) {
 </script>
 EOT;
 
-	return $js;
+	return $badge . $js;
 }
 
 
