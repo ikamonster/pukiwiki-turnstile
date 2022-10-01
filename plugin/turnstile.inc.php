@@ -16,13 +16,13 @@ PukiWikiをほぼ素のままで運用し、手軽にスパム対策したいか
 【導入手順】
 以下の手順に沿ってシステムに導入してください。
 
-1) クラウドフレアの「Turnstile」ダッシュボードで対象PukiWikiサイトのドメインを登録。「Widget Type」は必ず「Invisible」とすること。
+1) クラウドフレアの「Turnstile」ダッシュボードで対象PukiWikiサイトのドメインを登録。「Widget Type」を必ず「Invisible」とすること。
    そこで割り当てられたサイトキーとシークレットキーとを、本プラグインの定数 PLUGIN_TURNSTILE_SITE_KEY, PLUGIN_TURNSTILE_SECRET_KEY にそれぞれ設定する。
 
-2) PukiWikiファイル skin/pukiwiki.skin.php のほぼ末尾、「</body>」の直前に次のコードを挿入する。
+2) PukiWikiスキンファイル skin/pukiwiki.skin.php のほぼ末尾、</body>タグの直前に次のコードを挿入する。
    <?php if (exist_plugin_convert('turnstile')) echo do_plugin_convert('turnstile'); // Turnstile plugin ?>
 
-3) PukiWikiファイル lib/plugin.php の「function do_plugin_action($name)」関数内、「$retvar = call_user_func('plugin_' . $name . '_action');」行の直前に次のコードを挿入する。
+3) PukiWikiライブラリファイル lib/plugin.php の「function do_plugin_action($name)」関数内、「$retvar = call_user_func('plugin_' . $name . '_action');」行の直前に次のコードを挿入する。
    if (exist_plugin_action('turnstile') && ($__v = call_user_func_array('plugin_turnstile_action', array($name))['body'])) die_message($__v); // Turnstile plugin
 
 【ご注意】
@@ -41,7 +41,7 @@ if (!defined('PLUGIN_TURNSTILE_API_TIMEOUT'))   define('PLUGIN_TURNSTILE_API_TIM
 if (!defined('PLUGIN_TURNSTILE_CENSORSHIP'))    define('PLUGIN_TURNSTILE_CENSORSHIP',    '');         // 投稿禁止語句を表す正規表現（例：'/((https?|ftp)\:\/\/[\w!?\/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+|宣伝文句)/ui'）
 if (!defined('PLUGIN_TURNSTILE_CHECK_REFERER')) define('PLUGIN_TURNSTILE_CHECK_REFERER',  0);         // 1ならリファラーを参照し自サイト以外からの要求を拒否。リファラーは未送や偽装があり得るため頼るべきではないが、使える局面はあるかもしれない
 if (!defined('PLUGIN_TURNSTILE_ERR_STATUS'))    define('PLUGIN_TURNSTILE_ERR_STATUS',     403);       // 拒否時に返すHTTPステータスコード
-if (!defined('PLUGIN_TURNSTILE_ACTION'))        define('PLUGIN_TURNSTILE_ACTION',        'PukiWiki'); // クラウドフレアTurnsite分析画面で表示するアクション名
+if (!defined('PLUGIN_TURNSTILE_ACTION'))        define('PLUGIN_TURNSTILE_ACTION',        'PukiWiki'); // クラウドフレアTurnstile分析画面で表示するアクション名
 if (!defined('PLUGIN_TURNSTILE_DISABLED'))      define('PLUGIN_TURNSTILE_DISABLED',       0);         // 1なら本プラグインを無効化。メンテナンス用
 
 
@@ -188,7 +188,7 @@ __PluginTurnstile__.prototype.submit = function(e) {
 		}
 
 		if (${enabled}) {
-			// Turnsiteトークンを取得してフォーム送信
+			// Turnstileトークンを取得してフォーム送信
 			const	options = {
 				sitekey: '${siteKey}',
 				callback: function(token) { form.submit() }
