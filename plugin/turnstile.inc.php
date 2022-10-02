@@ -1,7 +1,7 @@
 <?php
 /**
 PukiWiki - Yet another WikiWikiWeb clone.
-turnstile.inc.php, v1.0 2022 M. Taniguchi
+turnstile.inc.php, v1.0.1 2022 M. Taniguchi
 License: GPL v2 or (at your option) any later version
 
 クラウドフレア Turnstile によるスパム対策プラグイン。
@@ -57,7 +57,7 @@ function plugin_turnstile_convert() {
 	if ($included) return '';
 	$included = true;
 
-	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by Turnstile and the Cloudflare <a href="' . 'https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="' . 'https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
+	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by Turnstile and the Cloudflare <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
 
 	// JavaScript
 	$siteKey = PLUGIN_TURNSTILE_SITE_KEY;
@@ -115,7 +115,7 @@ __PluginTurnstile__.prototype.loadLib = function() {
 	if (!this.libLoaded) {
 		this.libLoaded = true;
 		const	scriptElement = document.createElement('script');
-		scriptElement.src = '${jsSrc}';
+		scriptElement.src = '{$jsSrc}';
 		scriptElement.setAttribute('async', 'async');
 		scriptElement.setAttribute('defer', 'defer');
 		document.body.appendChild(scriptElement);
@@ -188,13 +188,13 @@ __PluginTurnstile__.prototype.submit = function(e) {
 			else nameEle.parentNode.removeChild(nameEle);
 		}
 
-		if (${enabled}) {
+		if ({$enabled}) {
 			// Turnstileトークンを取得してフォーム送信
 			const	options = {
-				sitekey: '${siteKey}',
+				sitekey: '{$siteKey}',
 				callback: function(token) { form.submit() }
 			};
-			if ('${action}' != '') options.action = '${action}';
+			if ('{$action}' != '') options.action = '{$action}';
 			turnstile.render('turnstile#__PluginTurnstile__' + form.getAttribute('data-turnstile-plugin'), options);
 		} else {
 			// Turnstile無効なら即フォーム送信
