@@ -1,7 +1,7 @@
 <?php
 /**
 PukiWiki - Yet another WikiWikiWeb clone.
-turnstile.inc.php, v1.0.2 2022 M. Taniguchi
+turnstile.inc.php, v1.0.3 2022 M. Taniguchi
 License: GPL v2 or (at your option) any later version
 
 クラウドフレア Turnstile によるスパム対策プラグイン。
@@ -57,7 +57,7 @@ function plugin_turnstile_convert() {
 	if ($included) return '';
 	$included = true;
 
-	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by <a href="https://www.cloudflare.com/products/turnstile/" rel="noopener nofollow external">Turnstile</a> and the Cloudflare <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
+	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms" style="font-size:7px">This site is protected by <a href="https://www.cloudflare.com/products/turnstile/" rel="noopener nofollow external">Turnstile</a> and the Cloudflare <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
 
 	// JavaScript
 	$siteKey = PLUGIN_TURNSTILE_SITE_KEY;
