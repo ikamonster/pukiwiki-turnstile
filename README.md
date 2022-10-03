@@ -51,7 +51,7 @@ if (exist_plugin_action('turnstile') && ($__v = call_user_func_array('plugin_tur
 |PLUGIN_TURNSTILE_SECRET_KEY|文字列||Turnstileシークレットキー。空の場合、Turnstile判定は実施されない|
 |PLUGIN_TURNSTILE_API_TIMEOUT|任意の数値|0|Turnstile APIタイムアウト時間（秒）。0なら無指定|
 |PLUGIN_TURNSTILE_CENSORSHIP|文字列||投稿禁止語句を表す正規表現|
-|PLUGIN_TURNSTILE_CHECK_REFERER|0 or 1|0|1ならリファラーを参照し自サイト以外からの要求を拒否。信頼性が低いため非推奨|
+|PLUGIN_TURNSTILE_CHECK_REFERER|0 or 1|0|1ならリファラーを参照し自サイト以外からの要求を拒否。信頼性が低いため非推奨だが、防壁をわずかでも強化したい場合に用いる|
 |PLUGIN_TURNSTILE_ERR_STATUS|HTTPステータスコード|403|拒否時に返すHTTPステータスコード|
 |PLUGIN_TURNSTILE_ACTION|文字列|'PukiWiki'|クラウドフレアTurnstile分析画面で表示するアクション名|
 |PLUGIN_TURNSTILE_DISABLED|0 or 1|0|1なら本プラグインを無効化（メンテナンス用）|
