@@ -1,7 +1,7 @@
 <?php
 /**
 PukiWiki - Yet another WikiWikiWeb clone.
-turnstile.inc.php, v1.0.1 2022 M. Taniguchi
+turnstile.inc.php, v1.0.2 2022 M. Taniguchi
 License: GPL v2 or (at your option) any later version
 
 クラウドフレア Turnstile によるスパム対策プラグイン。
@@ -19,7 +19,7 @@ PukiWikiをほぼ素のままで運用し、手軽にスパム対策したいか
 1) クラウドフレアの「Turnstile」ダッシュボードで対象PukiWikiサイトのドメインを登録。「Widget Type」を必ず「Invisible」とすること。
    そこで割り当てられたサイトキーとシークレットキーとを、本プラグインの定数 PLUGIN_TURNSTILE_SITE_KEY, PLUGIN_TURNSTILE_SECRET_KEY にそれぞれ設定する。
 
-2) PukiWikiスキンファイル skin/pukiwiki.skin.php のほぼ末尾、</body>タグの直前に次のコードを挿入する。
+2) PukiWikiスキンファイル（デフォルトは skin/pukiwiki.skin.php）のほぼ末尾、</body>タグの直前に次のコードを挿入する。
    <?php if (exist_plugin_convert('turnstile')) echo do_plugin_convert('turnstile'); // Turnstile plugin ?>
 
 3) PukiWikiライブラリファイル lib/plugin.php の「function do_plugin_action($name)」関数内、「$retvar = call_user_func('plugin_' . $name . '_action');」行の直前に次のコードを挿入する。
@@ -30,16 +30,16 @@ PukiWikiをほぼ素のままで運用し、手軽にスパム対策したいか
 ・PukiWiki 1.5.4／PHP 8.1／UTF-8／主要モダンブラウザーで動作確認済み。旧バージョンでも動くかもしれませんが非推奨です。
 ・JavaScriptが有効でないと動作しません。
 ・サーバーからTurnstile APIへのアクセスにcURLを使用します。
-・Turnstileについて詳しくはクラウドフレアのドキュメントをご覧ください。https: //developers.cloudflare.com/turnstile/
+・Turnstileについて詳しくはクラウドフレアのドキュメントをご覧ください。https://developers.cloudflare.com/turnstile/
 */
 
 /////////////////////////////////////////////////
 // Turnstile スパム対策プラグイン設定（turnstile.inc.php）
 if (!defined('PLUGIN_TURNSTILE_SITE_KEY'))      define('PLUGIN_TURNSTILE_SITE_KEY',      '');         // Turnstileサイトキー。空の場合、Turnstile判定は実施されない
 if (!defined('PLUGIN_TURNSTILE_SECRET_KEY'))    define('PLUGIN_TURNSTILE_SECRET_KEY',    '');         // Turnstileシークレットキー。空の場合、Turnstile判定は実施されない
-if (!defined('PLUGIN_TURNSTILE_API_TIMEOUT'))   define('PLUGIN_TURNSTILE_API_TIMEOUT',    0);         // Turnstile APIタイムアウト時間（秒）。0なら無指定
+if (!defined('PLUGIN_TURNSTILE_API_TIMEOUT'))   define('PLUGIN_TURNSTILE_API_TIMEOUT',    0);         // Turnstile APIタイムアウト時間（秒）。0ならPHP設定に準じる
 if (!defined('PLUGIN_TURNSTILE_CENSORSHIP'))    define('PLUGIN_TURNSTILE_CENSORSHIP',    '');         // 投稿禁止語句を表す正規表現（例：'/((https?|ftp)\:\/\/[\w!?\/\+\-_~=;\.,*&@#$%\(\)\'\[\]]+|宣伝文句)/ui'）
-if (!defined('PLUGIN_TURNSTILE_CHECK_REFERER')) define('PLUGIN_TURNSTILE_CHECK_REFERER',  0);         // 1ならリファラーを参照し自サイト以外からの要求を拒否。リファラーは未送や偽装があり得るため頼るべきではないが、使える局面はあるかもしれない
+if (!defined('PLUGIN_TURNSTILE_CHECK_REFERER')) define('PLUGIN_TURNSTILE_CHECK_REFERER',  0);         // 1ならリファラーを参照し自サイト以外からの要求を拒否。リファラーは未送や偽装があり得るため頼るべきではないが、防壁をわずかでも強化したい場合に用いる
 if (!defined('PLUGIN_TURNSTILE_ERR_STATUS'))    define('PLUGIN_TURNSTILE_ERR_STATUS',     403);       // 拒否時に返すHTTPステータスコード
 if (!defined('PLUGIN_TURNSTILE_ACTION'))        define('PLUGIN_TURNSTILE_ACTION',        'PukiWiki'); // クラウドフレアTurnstile分析画面で表示するアクション名
 if (!defined('PLUGIN_TURNSTILE_DISABLED'))      define('PLUGIN_TURNSTILE_DISABLED',       0);         // 1なら本プラグインを無効化。メンテナンス用
@@ -57,12 +57,12 @@ function plugin_turnstile_convert() {
 	if ($included) return '';
 	$included = true;
 
-	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by Turnstile and the Cloudflare <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
+	$badge = (!$enabled)? '' : '<div id="_p_turnstile_terms">This site is protected by <a href="https://www.cloudflare.com/products/turnstile/" rel="noopener nofollow external">Turnstile</a> and the Cloudflare <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener nofollow external">Privacy Policy</a> and <a href="https://www.cloudflare.com/website-terms/" rel="noopener nofollow external">Terms of Service</a> apply.</div>';
 
 	// JavaScript
 	$siteKey = PLUGIN_TURNSTILE_SITE_KEY;
 	$action = PLUGIN_TURNSTILE_ACTION;
-	$jsSrc = 'https:'.'//challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__PluginTurnstile_onloadTurnstileCallback';
+	$jsSrc = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=__PluginTurnstile_onloadTurnstileCallback';
 	$enabled = ($enabled)? 'true' : 'false';
 	$js = <<<EOT
 <script>
@@ -266,7 +266,7 @@ function plugin_turnstile_action() {
 
 					// Turnstile API呼び出し
 					if ($enabled) {
-						$ch = curl_init('https:'.'//challenges.cloudflare.com/turnstile/v0/siteverify');
+						$ch = curl_init('https://challenges.cloudflare.com/turnstile/v0/siteverify');
 						curl_setopt($ch, CURLOPT_POST, true);
 						curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array('secret' => PLUGIN_TURNSTILE_SECRET_KEY, 'response' => $vars['cf-turnstile-response'])));
 						curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
