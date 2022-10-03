@@ -1,6 +1,6 @@
 # PukiWiki用プラグイン<br>スパム対策 turnstile.inc.php
 
-クラウドフレア [Turnstile](https://developers.cloudflare.com/turnstile/) によりスパムを防ぐ[PukiWiki](https://pukiwiki.osdn.jp/)用プラグイン。  
+クラウドフレア [Turnstile](https://www.cloudflare.com/products/turnstile/) によりスパムを防ぐ[PukiWiki](https://pukiwiki.osdn.jp/)用プラグイン。  
 
 ページ編集・コメント投稿・ファイル添付など、PukiWiki 標準の編集機能をスパムから守ります。  
 Turnstileは不審な送信者を自動判定する防壁です。CAPTCHAのような煩わしい入力を要求せず、ウィキの使用感に影響しません。
@@ -26,7 +26,7 @@ Turnstile を使わず、禁止語句判定のみ用いることも可能です�
 以下の手順に沿って PukiWiki に導入してください。
 
 1. [GitHubページ](https://github.com/ikamonster/pukiwiki-turnstile) からダウンロードした turnstile.inc.php を PukiWiki の plugin ディレクトリに配置する。
-2. クラウドフレアの Turnstile ダッシュボードで対象PukiWikiサイトのドメインを登録。「Widget Type」を必ず「**Invisible**」とすること。  
+2. クラウドフレアの Turnstile ダッシュボードで対象PukiWikiサイトのドメインを登録。「Widget Type」を必ず「**Invisible**（不可視）」とすること。  
 そこで割り当てられたサイトキーとシークレットキーとを、本プラグインの定数 PLUGIN_TURNSTILE_SITE_KEY, PLUGIN_TURNSTILE_SECRET_KEY にそれぞれ設定する。
 3. PukiWikiスキンファイルのほぼ末尾、\</body> タグの直前に次のコードを挿入する。  
 ```PHP
