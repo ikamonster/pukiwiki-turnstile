@@ -32,7 +32,7 @@ Turnstile を使わず、禁止語句判定のみ用いることも可能です�
 ```PHP
 <?php if (exist_plugin_convert('turnstile')) echo do_plugin_convert('turnstile'); // Turnstile plugin ?>
 ```
-4. PukiWikiライブラリファイル lib/plugin.php の「function do_plugin_action($name)」関数内、「```$retvar = call_user_func('plugin_' . $name . '_action');```」行の直前に次のコードを挿入する。  
+4. PukiWikiライブラリファイル lib/plugin.php の「```function do_plugin_action($name)```」関数内、「```$retvar = call_user_func('plugin_' . $name . '_action');```」行の直前に次のコードを挿入する。  
 ```PHP
 if (exist_plugin_action('turnstile') && ($__v = call_user_func_array('plugin_turnstile_action', array($name))['body'])) die_message($__v); // Turnstile plugin
 ```
