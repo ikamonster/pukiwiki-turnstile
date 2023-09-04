@@ -1,7 +1,7 @@
 <?php
 /**
 PukiWiki - Yet another WikiWikiWeb clone.
-turnstile.inc.php, v1.0.3 2022 M. Taniguchi
+turnstile.inc.php, v1.0.4 2022 M. Taniguchi
 License: GPL v2 or (at your option) any later version
 
 クラウドフレア Turnstile によるスパム対策プラグイン。
@@ -76,31 +76,31 @@ window.addEventListener('DOMContentLoaded', () => {
 
 function __PluginTurnstile_onloadTurnstileCallback() {
 	__PluginTurnstile_Instance__.setup();
-}
+};
 
-var	__PluginTurnstile__ = function() {
+const	__PluginTurnstile__ = function() {
 	const	self = this;
 	this.timer = null;
 	this.libLoaded = false;
 	this.observer = null;
 
-	// DOMを監視し、もしページ内容が動的に変更されたら再設定する（モダンブラウザーのみ対応）
+	/* DOMを監視し、もしページ内容が動的に変更されたら再設定する（モダンブラウザーのみ対応） */
 	if (!self.observer) self.observer = new MutationObserver((mutations) => { mutations.forEach((mutation) => { if (mutation.type == 'childList') self.update(); }); });
 	if (self.observer) {
 		const target = document.getElementsByTagName('body')[0];
 		if (target) self.observer.observe(target, { childList: true, subtree: true });
 	}
 
-	// 設定更新
+	/* 設定更新 */
 	this.update();
 };
 
-// 設定更新
+/* 設定更新 */
 __PluginTurnstile__.prototype.update = function() {
 	const	self = this;
 	if (this.timer) clearTimeout(this.timer);
 	this.timer = setTimeout(() => {
-		// form要素があればTurnstileを設定
+		/* form要素があればTurnstileを設定 */
 		const	elements = document.getElementsByTagName('form');
 		if (elements.length > 0) {
 			self.loadLib();
@@ -110,7 +110,7 @@ __PluginTurnstile__.prototype.update = function() {
 	}, 50);
 };
 
-// Turnstileコードロード
+/* Turnstileコードロード */
 __PluginTurnstile__.prototype.loadLib = function() {
 	if (!this.libLoaded) {
 		this.libLoaded = true;
@@ -122,55 +122,55 @@ __PluginTurnstile__.prototype.loadLib = function() {
 	}
 };
 
-// Turnstile設定
+/* Turnstile設定 */
 __PluginTurnstile__.prototype.setup = function() {
 	const	self = this;
 
 	if (!window.turnstile) return;
 
-	// 全form要素を走査
+	/* 全form要素を走査 */
 	const	elements = document.getElementsByTagName('form');
 	for (let i = elements.length - 1; i >= 0; --i) {
 		const	form = elements[i];
 		if (!form.hasAttribute('data-turnstile-plugin')) {
 			form.setAttribute('data-turnstile-plugin', i);
 
-			// formにTurnstile要素を挿入
+			/* formにTurnstile要素を挿入 */
 			const	turnstileElement = document.createElement('turnstile');
 			turnstileElement.setAttribute('id', '__PluginTurnstile__' + i);
 			turnstileElement.setAttribute('inert', 'true');
 			turnstileElement.setAttribute('style', 'position:absolute;width:0px;min-width:0px;height:0px;min-height:0px;overflow:hidden;visibility:hidden');
 			form.appendChild(turnstileElement);
 
-			// form内全submitボタンを走査しクリックイベントを設定
+			/* form内全submitボタンを走査しクリックイベントを設定 */
 			const	eles = form.querySelectorAll('input[type="submit"]');
 			if (eles.length > 0) {
 				for (var j = eles.length - 1; j >= 0; --j) eles[j].addEventListener('click', self.submit, false);
 
-				// こちらのタイミングで送信するため、既定の送信イベントを止めておく
+				/* こちらのタイミングで送信するため、既定の送信イベントを止めておく */
 				form.addEventListener('submit', self.stopSubmit, false);
 			}
 		}
 	}
 };
 
-// 送信防止
+/* 送信防止 */
 __PluginTurnstile__.prototype.stopSubmit = function(e) {
 	e.preventDefault();
 	e.stopPropagation();
 	return false;
 };
 
-// クリック時送信処理
+/* クリック時送信処理 */
 __PluginTurnstile__.prototype.submit = function(e) {
 	let	form;
 	if (this.closest) {
 		form = this.closest('form');
 	} else {
-		for (form = this.parentNode; form; form = form.parentNode) if (form.nodeName.toLowerCase() == 'form') break;	// 旧ブラウザー対策
+		for (form = this.parentNode; form; form = form.parentNode) if (form.nodeName.toLowerCase() == 'form') break;	/* 旧ブラウザー対策 */
 	}
 
-	// クリックされたsubmitボタンのname,value属性をhiddenにコピー（submitボタンが複数ある場合への対処）
+	/* クリックされたsubmitボタンのname,value属性をhiddenにコピー（submitボタンが複数ある場合への対処） */
 	if (form) {
 		const	nameEle = form.querySelector('.__plugin_turnstile_submit__');
 		const	name = this.getAttribute('name');
@@ -189,7 +189,7 @@ __PluginTurnstile__.prototype.submit = function(e) {
 		}
 
 		if ({$enabled}) {
-			// Turnstileトークンを取得してフォーム送信
+			/* Turnstileトークンを取得してフォーム送信 */
 			const	options = {
 				sitekey: '{$siteKey}',
 				callback: function(token) { form.submit() }
@@ -197,7 +197,7 @@ __PluginTurnstile__.prototype.submit = function(e) {
 			if ('{$action}' != '') options.action = '{$action}';
 			turnstile.render('turnstile#__PluginTurnstile__' + form.getAttribute('data-turnstile-plugin'), options);
 		} else {
-			// Turnstile無効なら即フォーム送信
+			/* Turnstile無効なら即フォーム送信 */
 			form.submit();
 		}
 	}
@@ -206,7 +206,11 @@ __PluginTurnstile__.prototype.submit = function(e) {
 </script>
 EOT;
 
-	return $badge . $js;
+	$body = $badge . $js;
+
+	$body = preg_replace("/((\s|\n){1,})/i", ' ', $body);	// 連続空白を単一空白に（※「//」コメント非対応）
+
+	return $body;
 }
 
 
